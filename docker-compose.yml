@@ -1,0 +1,28 @@
+version: "3.7"
+services: 
+    postgis:
+        build: ./postgis
+        volumes:
+            - postgres-data:/var/lib/postgresql/data
+        environment:
+            - POSTGRES_USER=${SEQUELIZE_USERNAME}
+            - POSTGRES_PASSWORD=${SEQUELIZE_PASSWORD}
+            - POSTGRES_DB=${SEQUELIZE_DATABASE}
+        ports:
+            - ${SEQUELIZE_PORT}:5432
+
+    mongo:
+        image: mongo:latest
+        restart: always
+        environment:
+            - MONGO_INITDB_ROOT_USERNAME=${MONGO_USERNAME}
+            - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD}
+            - MONGO_INITDB_DATABASE=${MONGO_DATABASE}
+        volumes:
+            - ./mongo/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+            - mongo-data:/data/db
+        ports:
+            - ${MONGO_PORT}:27017
+volumes:
+    postgres-data:
+    mongo-data:
